@@ -1,0 +1,21 @@
+.button {
+  outline: none;
+  transition-duration: 0.2s;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border: outset;
+  &_restart-good {
+    background-image: url("../../assets/img/smile.svg");
+  }
+  &_restart-bad {
+    background-image: url("../../assets/img/sad.svg");
+  }
+  &:hover {
+    background-color: white;
+  }
+}
