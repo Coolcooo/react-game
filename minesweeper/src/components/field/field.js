@@ -88,14 +88,13 @@ class Field extends React.Component {
         this.restart();
       }
     });
+    document.querySelector('.button-smile').addEventListener('click', () => {
+      this.restart();
+    });
   }
 
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.isRestart) {
-      this.restart();
-      this.props.doRestart();
-    }
     this.leftClickSound.volume = this.props.soundVolume;
     this.rightClickSound.volume = this.props.soundVolume;
   }
@@ -149,6 +148,7 @@ class Field extends React.Component {
     this.setState({cellsValue: newCellsValue});
     const cellsOfFlag = document.querySelectorAll('.cell_flag');
     this.props.removeFlag(9 - (this.props.countOfFlags + cellsOfFlag.length));
+    this.props.stopTime();
     this.props.resetTime();
     doSmileRestart();
     this.props.startTime();

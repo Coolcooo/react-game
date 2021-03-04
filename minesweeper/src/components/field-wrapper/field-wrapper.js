@@ -11,7 +11,6 @@ export default class FieldWrapper extends Component {
     this.state = {
       countOfFlags: 9,
       time: 0,
-      restart: false,
       isStopTime: false
     }
   }
@@ -37,10 +36,6 @@ export default class FieldWrapper extends Component {
   resetTime = () => {
     this.setState({time: 0});
   }
-  doRestart = () => {
-    this.setState({restart: !this.state.restart},() => {
-    });
-  }
   render() {
     return (
       <div className="field-wrapper">
@@ -49,7 +44,7 @@ export default class FieldWrapper extends Component {
             countOfFlags={this.state.countOfFlags}
 
           />
-          <RestartSmile doRestart={this.doRestart}/>
+          <RestartSmile />
           <Timer
             startTime={this.setTime}
             time={this.state.time}
@@ -57,7 +52,6 @@ export default class FieldWrapper extends Component {
         </div>
         <Field startTime={this.setTime}
           stopTime={this.stopTime}
-          doRestart={this.doRestart}
           isRestart={this.state.restart}
           resetTime={this.resetTime}
                time={this.state.time}
