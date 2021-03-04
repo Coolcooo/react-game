@@ -5,7 +5,6 @@ import leftClick from '../../assets/sounds/left-click.mp3';
 import rightClick from '../../assets/sounds/right-click.mp3';
 
 
-
 const shuffle = (arr) => {
   return arr.sort(() => Math.random() - 0.5);
 }
@@ -22,7 +21,6 @@ const arrToSqrMatrix = (arr) => {
 }
 
 const addNumbers = (sqrMatrix) => {
-  console.log(sqrMatrix)
   for (let i = 0; i < sqrMatrix.length; i += 1) {
     for (let j = 0; j < sqrMatrix.length; j += 1) {
       if (sqrMatrix[i][j] === 'p') {
@@ -52,6 +50,22 @@ const createMinesweeperField = () => {
   return matrix;
 }
 
+const doSmileLose = () => {
+  const smileRestart = document.querySelector('.button-smile');
+  smileRestart.classList.remove('button_restart-good');
+  smileRestart.classList.add('button_restart-bad');
+}
+const doSmileWin = () => {
+  const smileRestart = document.querySelector('.button-smile');
+  smileRestart.classList.remove('button_restart-good');
+  smileRestart.classList.add('button_restart-win');
+}
+const doSmileRestart = () => {
+  const smileRestart = document.querySelector('.button-smile');
+  smileRestart.classList.remove('button_restart-bad', 'button_restart-win');
+  smileRestart.classList.add('button_restart-good');
+}
+
 class Field extends React.Component {
   constructor(props) {
     super(props);
@@ -60,14 +74,15 @@ class Field extends React.Component {
       countOfCells: 72,
     }
   }
+
   leftClickSound = new Audio(leftClick);
   rightClickSound = new Audio(rightClick);
   countOfCells = 72;
   isFinished = false;
   isLose = false;
+
   componentDidMount() {
-    const music = document.getElementById('music');
-    const sound = document.getElementById('sound');
+
     document.body.addEventListener('keydown', (e) => {
       if (e.code === 'KeyR') {
         this.restart();
@@ -75,28 +90,72 @@ class Field extends React.Component {
     });
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-  if (this.countOfCells === 0) {
-    this.isFinished = true;
-    alert('You win');
-  }
-  this.leftClickSound.volume = this.props.soundVolume;
-  this.rightClickSound.volume = this.props.soundVolume;
-}
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.isRestart) {
+      this.restart();
+      this.props.doRestart();
+    }
+    this.leftClickSound.volume = this.props.soundVolume;
+    this.rightClickSound.volume = this.props.soundVolume;
+  }
+
+  openHidEmptyCell = (p) => {
+    if (p.childNodes[0].classList.contains('cell_hidden') && p.innerText !== 'p') {
+      if (p.childNodes[0].classList.contains('cell_flag')) {
+
+      }
+      p.childNodes[0].classList.remove('cell_hidden', 'cell_flag');
+      this.countOfCells -= 1;
+      if (this.countOfCells === 0) {
+        this.isFinished = true;
+        doSmileWin();
+        this.props.stopTime();
+        this.props.addBestResult(this.props.time);
+      }
+      if (p.innerText !== '') {
+        return;
+      }
+
+      const cell = p;
+      const dataposOfCell = cell.getAttribute('datapos');
+      const [i, j] = dataposOfCell.split(' ').map((p) => parseFloat(p));
+      for (let k = -1; k <= 1; k += 1) {
+        for (let c = -1; c <= 1; c += 1) {
+          const isColumnRange = (i + k >= 0) && (i + k < 9);
+          const isRowRange = (j + c >= 0) && (j + c < 9);
+          if (isColumnRange && isRowRange) {
+            const fil = document.querySelector('.field');
+            fil.childNodes.forEach((epo) => {
+              if (epo.getAttribute('datapos') === `${i + k} ${j + c}`) {
+                this.openHidEmptyCell(epo);
+              }
+            });
+          }
+        }
+      }
+    }
+  }
 
 
   restart = () => {
-  this.countOfCells = 72;
-  const newCellsValue = createMinesweeperField();
-  this.isFinished = false;
-  document.querySelectorAll('.cell').forEach((e) => {
-    e.classList.add('cell_hidden');
-    e.classList.remove('cell_flag');
-  })
-  this.setState({cellsValue: newCellsValue});
+    this.countOfCells = 72;
+    const newCellsValue = createMinesweeperField();
+    this.isFinished = false;
+    document.querySelectorAll('.cell').forEach((e) => {
+      e.classList.add('cell_hidden');
+      e.classList.remove('cell_flag');
+    });
+    this.setState({cellsValue: newCellsValue});
+    const cellsOfFlag = document.querySelectorAll('.cell_flag');
+    this.props.removeFlag(9 - (this.props.countOfFlags + cellsOfFlag.length));
+    this.props.resetTime();
+    doSmileRestart();
+    this.props.startTime();
+  }
 
-}
+
+
 
   openHiddenCell = (e) => {
     if (this.isFinished) {
@@ -105,51 +164,24 @@ class Field extends React.Component {
     if (this.props.isSoundPlay) {
       this.leftClickSound.play();
     }
-
-
-    const openHidEmptyCell = (p) => {
-      if (p.childNodes[0].classList.contains('cell_hidden') && p.innerText !== 'p') {
-        if (p.childNodes[0].classList.contains('cell_flag')) {
-          this.props.removeFlag();
-        }
-        p.childNodes[0].classList.remove('cell_hidden');
-        this.countOfCells -= 1;
-        if (p.innerText !== '') {
-          return;
-        }
-
-        const cell = p;
-        const dataposOfCell = cell.getAttribute('datapos');
-        const [i, j] = dataposOfCell.split(' ').map((p) => parseFloat(p));
-        for (let k = -1; k <= 1; k += 1) {
-          for (let c = -1; c <= 1; c += 1) {
-            const isColumnRange = (i + k >= 0) && (i + k < 9);
-            const isRowRange = (j + c >= 0) && (j + c < 9);
-            if (isColumnRange && isRowRange) {
-              const fil = document.querySelector('.field');
-              fil.childNodes.forEach((epo) => {
-                if (epo.getAttribute('datapos') === `${i+k} ${j+c}`) {
-                  openHidEmptyCell(epo);
-                }
-              });
-            }
-          }
-        }
-      }
-    }
     if (e.target.closest('.cell-wrapper')) {
       if (e.target.closest('.cell_hidden')) {
         if (e.target.closest('.cell_hidden').classList.contains('cell_flag')) {
-          this.props.removeFlag();
+
         }
-        e.target.closest('.cell_hidden').classList.remove('cell_hidden','cell_flag');
+        e.target.closest('.cell_hidden').classList.remove('cell_hidden', 'cell_flag');
         this.countOfCells -= 1;
-        this.forceUpdate();
+        if (this.countOfCells === 0) {
+          this.isFinished = true;
+          doSmileWin();
+          this.props.stopTime();
+          this.props.addBestResult(this.props.time);
+        }
       }
       if (e.target.closest('.cell-wrapper').innerText === 'p') {
         this.isFinished = true;
-        alert('You lose');
-        this.restart();
+        doSmileLose();
+        this.props.stopTime();
       }
       if (e.target.closest('.cell-wrapper').innerText === '') {
         const cell = e.target.closest('.cell-wrapper');
@@ -164,14 +196,17 @@ class Field extends React.Component {
               const fil = document.querySelector('.field');
               fil.childNodes.forEach((epo) => {
 
-                if (epo.getAttribute('datapos') === `${i+k} ${j+c}`) {
-                  openHidEmptyCell(epo);
+                if (epo.getAttribute('datapos') === `${i + k} ${j + c}`) {
+                  this.openHidEmptyCell(epo);
                 }
               });
             }
           }
         }
       }
+      const cellsOfFlag = document.querySelectorAll('.cell_flag');
+      this.props.removeFlag(9 - (this.props.countOfFlags + cellsOfFlag.length));
+
     }
   }
   addFlag = (e) => {
@@ -182,14 +217,15 @@ class Field extends React.Component {
         this.rightClickSound.play();
       }
       if (cell.classList.contains('cell_flag')) {
-        this.props.removeFlag();
+        this.props.removeFlag(1);
         cell.classList.remove('cell_flag');
       } else if (this.props.countOfFlags > 0) {
-        this.props.addFlag();
+        this.props.addFlag(1);
         cell.classList.add('cell_flag');
       }
     }
   }
+
   render() {
     const fieldCells = this.state.cellsValue.reduce((acc, arr, indRow) => {
       acc.push(...arr.map((e, indColumn) => <Cell

@@ -10,19 +10,16 @@ export default class Timer extends Component {
   }
   start = new Date();
 
-  setTimer = async () => {
-    const timeNow = Math.floor((new Date() - this.start) / 1000);
-    await this.setState({ time: timeNow});
-    setTimeout(this.setTimer,1000);
-}
+
 componentDidMount() {
-    this.setTimer();
+  this.props.startTime();
 }
+
 
   render() {
 
     return <div className='timer'>
-      {this.state.time}
+      {this.props.time}
     </div>
   }
 }

@@ -15,6 +15,9 @@
   &_restart-bad {
     background-image: url("../../assets/img/sad.svg");
   }
+  &_restart-win {
+    background-image: url("../../assets/img/cool.svg");
+  }
   &:hover {
     background-color: white;
   }

@@ -1,9 +1,10 @@
 import React from 'react';
 import './restart-smile.scss';
 
-const RestartSmile = () => {
+const RestartSmile = ({ doRestart }) => {
+
   return (
-    <button className="button button_restart-good"></button>
+    <button onClick={doRestart} className="button button-smile button_restart-good" />
   );
 }
 
