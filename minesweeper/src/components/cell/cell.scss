@@ -1,0 +1,41 @@
+.cell-wrapper {
+  background-color: rgb(211, 211, 211);
+  border: none;
+  box-shadow: inset 0 0 0 1px black;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  &_hidden {
+    background-color: gray;
+
+  }
+}
+.cell {
+  display: none;
+  &_hidden {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(196, 194, 194);
+    border: outset;
+    transition-duration: 0.2s;
+    &:hover {
+      background-color: rgb(211, 211, 211);
+    }
+  }
+  &_flag {
+    background-image: url("../../assets/img/flag.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  &__value {
+    cursor: default;
+  }
+}
+

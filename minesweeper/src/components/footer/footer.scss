@@ -1,0 +1,29 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: antiquewhite;
+  &__rsschool-link {
+    background-image: url("../../assets/img/rs_school_js.svg");
+    width: 70px;
+    height: 30px;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    transition-duration: 0.2s;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+  &__developer-link {
+    background-image: url("../../assets/img/github.svg");
+    height: 30px;
+    width: 30px;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    transition-duration: 0.2s;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

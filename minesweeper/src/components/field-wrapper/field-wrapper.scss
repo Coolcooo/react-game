@@ -1,0 +1,16 @@
+.field-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: auto;
+  background-color: rgb(211, 211, 211);
+  border: outset;
+
+  &__information {
+    width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: 10px 0;
+  }
+}
