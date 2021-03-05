@@ -23,14 +23,14 @@ const arrToSqrMatrix = (arr) => {
 const addNumbers = (sqrMatrix) => {
   for (let i = 0; i < sqrMatrix.length; i += 1) {
     for (let j = 0; j < sqrMatrix.length; j += 1) {
-      if (sqrMatrix[i][j] === 'p') {
+      if (sqrMatrix[i][j] === 'dangerous') {
         for (let k = -1; k <= 1; k += 1) {
           for (let c = -1; c <= 1; c += 1) {
             const isColumnRange = (i + k >= 0) && (i + k < sqrMatrix.length);
             const isRowRange = (j + c >= 0) && (j + c < sqrMatrix.length);
 
             if (isColumnRange && isRowRange) {
-              const isNotMine = !((k === 0 && c === 0) || (sqrMatrix[i + k][j + c] === 'p'));
+              const isNotMine = !((k === 0 && c === 0) || (sqrMatrix[i + k][j + c] === 'dangerous'));
 
               if (isNotMine) {
                 sqrMatrix[i + k][j + c] = sqrMatrix[i + k][j + c] + 1;
@@ -44,7 +44,7 @@ const addNumbers = (sqrMatrix) => {
 }
 
 const createMinesweeperField = () => {
-  const randomCells = shuffle([...Array(9).fill('p'), ...Array(72).fill(0)]);
+  const randomCells = shuffle([...Array(9).fill('dangerous'), ...Array(72).fill(0)]);
   const matrix = arrToSqrMatrix(randomCells);
   addNumbers(matrix);
   return matrix;
@@ -100,7 +100,7 @@ class Field extends React.Component {
   }
 
   openHidEmptyCell = (p) => {
-    if (p.childNodes[0].classList.contains('cell_hidden') && p.innerText !== 'p') {
+    if (p.childNodes[0].classList.contains('cell_hidden') && p.innerText !== 'dangerous') {
       if (p.childNodes[0].classList.contains('cell_flag')) {
 
       }
@@ -178,7 +178,7 @@ class Field extends React.Component {
           this.props.addBestResult(this.props.time);
         }
       }
-      if (e.target.closest('.cell-wrapper').innerText === 'p') {
+      if (e.target.closest('.cell-wrapper').innerText === 'dangerous') {
         this.isFinished = true;
         doSmileLose();
         this.props.stopTime();
@@ -235,6 +235,7 @@ class Field extends React.Component {
       />));
       return acc;
     }, [])
+    console.log(fieldCells)
 
     return (
       <div className="field" onClick={this.openHiddenCell} onContextMenu={this.addFlag}>

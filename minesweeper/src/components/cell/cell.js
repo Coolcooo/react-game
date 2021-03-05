@@ -11,7 +11,9 @@ class Cell extends React.Component {
     return (
       <div className="cell-wrapper" datapos={this.props.position}>
         <div className="cell cell_hidden"></div>
-        <div className="cell__value" style={style} >{this.props.cellValue}</div>
+        <div className={this.props.cellValue === 'dangerous' ? 'cell__value material-icons' : 'cell__value'}
+
+         style={style} >{this.props.cellValue}</div>
       </div>
     )
   }
